@@ -61,5 +61,10 @@ MMR (markdown mindmap react) это простой Markdown редактор д�
 - acme-nginx -d {DOMAIN_NAME} --debug
 если выходит ошибка проверяем ufw, sudo ufw disable пробуем снова, затем sudo ufw enable и открываем порты sudo ufw allow 443 (и т.д.)
 !!!
+- cd markdown_mindmap_react
+- git pull
+- npm run build
+- rm -rf ../../var/www/dist/
+- mv dist ../../var/www/
 
 
