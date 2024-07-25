@@ -190,11 +190,11 @@ export default function MarkmapHooks() {
   };
 
   const addCheckBoxTrue = () => {
-    setValue(value + '\n[x] ' + 'Checkbox True');
+    setValue(value + '\n- [x] ' + 'Checkbox True');
   };
 
   const addCheckBoxFalse = () => {
-    setValue(value + '\n[ ] ' + 'Checkbox False');
+    setValue(value + '\n- [ ] ' + 'Checkbox False');
   };
 
   const svgFontColor = '#ffffff';
