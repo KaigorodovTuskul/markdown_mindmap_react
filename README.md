@@ -38,27 +38,27 @@ MMR (markdown mindmap react) это простой Markdown редактор д�
 Для остальной кастомизации страницы, см. src/components/mindMap/style.css
 
 # Деплой
-sudo apt install git-all
-git clone https://github.com/KaigorodovTuskul/markdown_mindmap_react.git
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+- sudo apt install git-all
+- git clone https://github.com/KaigorodovTuskul/markdown_mindmap_react.git
+- curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+- export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-nvm install 20.16.0
-npm i
-npm run build
-cd /
-cd markdown_mindmap_react
+- nvm install 20.16.0
+- npm i
+- npm run build
+- cd /
+- cd markdown_mindmap_react
 !!!
 в случае если используете npm run build, то можете вместо html указать dist
 !!!
-mv dist ../../var/www 
+- mv dist ../../var/www 
 
-cd /etc/nginx/sites-enabled
-sudo ln -s /etc/nginx/sites-available/{DOMAIN_NAME}.conf {DOMAIN_NAME}.conf 
-sudo service nginx restart
+- cd /etc/nginx/sites-enabled
+- sudo ln -s /etc/nginx/sites-available/{DOMAIN_NAME}.conf {DOMAIN_NAME}.conf 
+- sudo service nginx restart
 !!!
 скопировать / создать конфиг для nginx прописать без указания ssl (в случае если создаете для поддомена) 
-acme-nginx -d {DOMAIN_NAME} --debug
+- acme-nginx -d {DOMAIN_NAME} --debug
 если выходит ошибка проверяем ufw, sudo ufw disable пробуем снова, затем sudo ufw enable и открываем порты sudo ufw allow 443 (и т.д.)
 !!!
 
