@@ -5,7 +5,7 @@ import { Toolbar } from 'markmap-toolbar';
 import 'markmap-toolbar/dist/style.css';
 import ButtonPanel from './ButtonPanel'; 
 
-const initValue = '# Header ## Subheader - [ ] Node 1 - [x] Node 2';
+const initValue = '# Header';
 const LOCAL_STORAGE_KEY_VALUE = 'savedValue';
 const LOCAL_STORAGE_KEY_NAME = 'savedFileName';
 
