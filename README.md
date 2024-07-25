@@ -1,4 +1,5 @@
 # ENGLISH
+[Inspired with markmap project](https://github.com/markmap/markmap). 
 MMR (markdown mindmap react) is a simple Markdown mind map editor built with react (js + typescript). This project enables users to create, save, and load mind maps in convenient formats (txt, svg).
 The project was created as a pet project for my own needs. I'm just learning React, so I'm not responsible for the quality of the code. If it is useful to someone, then I'm pleased.
 ## Functionality
@@ -15,6 +16,7 @@ Checkout src/components/mindMap/markmap-hooks.tsx
 For page customization check out src/components/mindMap/style.css
 
 # Русский язык
+[За основу был взят markmap](https://github.com/markmap/markmap).
 MMR (markdown mindmap react) это простой Markdown редактор для создания интеллектуальных карт (mindmap) реализованный на react (js + typescript). Редактор позволяет создавать, редактировать, загружать и сохранять карты (в двух форматах: txt, svg).
 Этот пет проект был создан для моих собственных нужд, т.к. мне нужен был простой, компактный и незамудренный инструмент для создания mindmap. Я больше по бэкенду, фронтенд только начинаю тыкать, поэтому за качество кода ручаться не могу. Но если кому-то будет полезно, я буду рад.
 ## Функциональность
