@@ -14,6 +14,11 @@ Checkout src/components/mindMap/markmap-hooks.tsx
 - To change SVG font color check const svgFontColor = '#ffffff';
 - To change SVG bg color check const svgBackgroundColor = '#282832';
 For page customization check out src/components/mindMap/style.css
+<a href="https://mindmap.nocturnal-app.ru" target="_blank">
+    <img src="https://raw.githubusercontent.com/markdown_mindmap_react/markdown_mindmap_react/stable/src/assets/images/readme-header.png">
+</a>
+
+
 
 # Русский язык
 [За основу был взят markmap](https://github.com/markmap/markmap).
