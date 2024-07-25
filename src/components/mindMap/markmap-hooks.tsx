@@ -219,7 +219,7 @@ export default function MarkmapHooks() {
                 setFileName(editableFileName);
                 localStorage.setItem(LOCAL_STORAGE_KEY_NAME, editableFileName); 
               }}
-              placeholder="Без названия"
+              placeholder="Untitled"
               style={{ width: '100%', textAlign: 'center', backgroundColor: 'var(--background-color)', color: 'var(--primary-color)'}}
             />
           </div>
