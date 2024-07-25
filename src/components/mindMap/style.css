@@ -1,0 +1,80 @@
+@import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.0/dist/tailwind.min.css');
+
+h1,
+p {
+  font-family: Lato;
+}
+
+.mm-toolbar img {
+  display: inline;
+}
+
+.mm-toolbar {
+  background-color: var(--background-color);
+  color: var(--primary-color);
+}
+
+.image-content {
+  border: 2px solid white;
+  padding: 1px; 
+  border-radius: 8px; 
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+}
+
+.app-container {
+  display: flex;
+}
+
+.container-wrapper {
+  display: grid;
+  grid-template-columns: 7% 25% 70%;
+  flex: 1;
+  height: 90vh; /* Set the desired height here */
+}
+
+.textarea-container {
+  padding: 1px;
+  border-right: 1px solid #ccc;
+}
+
+.svg-container {
+  padding: 1px;
+}
+
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 10px;
+  border-left: 1px solid #ccc;
+}
+
+.file-title {
+  color: var(--secondary-color);
+  font-size: xx-large;
+  padding: 1px;
+  text-align: center;
+  border-bottom: 1px solid #ccc; /* Optional: Add a border for better separation */
+}
+
+.button-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  margin-top: 60px;
+  margin-right: 20px;
+
+}
+.button-panel button {
+  padding: 5px 5px;
+  margin-bottom: 10px;
+  border: 1px solid var(--primary-color); /* Add a border */
+  border-radius: 4px; /* Optional: Add border-radius for rounded corners */
+
+  background-color: var(--background-color);
+  color: var(--primary-color);
+  cursor: pointer; /* Change cursor on hover */
+  font-size: 16px; /* Font size */
+  transition: background-color 0.3s, color 0.3s; /* Transition for hover effects */
+}
+

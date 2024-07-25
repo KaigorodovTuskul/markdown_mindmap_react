@@ -1,0 +1,1 @@
+export { default as MindMapApp } from "./mindMap/MindMapApp";
