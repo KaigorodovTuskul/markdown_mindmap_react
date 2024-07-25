@@ -1,3 +1,5 @@
+![MMR](https://github.com/KaigorodovTuskul/markdown_mindmap_react/blob/stable/src/assets/images/readme_gif.gif)
+
 # ENGLISH
 [Inspired with markmap project](https://github.com/markmap/markmap). 
 MMR (markdown mindmap react) is a simple Markdown mind map editor built with react (js + typescript). This project enables users to create, save, and load mind maps in convenient formats (txt, svg).
@@ -14,11 +16,9 @@ Checkout src/components/mindMap/markmap-hooks.tsx
 - To change SVG font color check const svgFontColor = '#ffffff';
 - To change SVG bg color check const svgBackgroundColor = '#282832';
 For page customization check out src/components/mindMap/style.css
-<a href="https://raw.githubusercontent.com/KaigorodovTuskul/markdown_mindmap_react/stable/src/assets/images/readme-header.png" target="_blank">
-    <img src="https://github.com/KaigorodovTuskul/markdown_mindmap_react/blob/stable/src/assets/images/readme-header.png">
-</a>
 
-
+# DEMO
+[Try it out!](https://mindmap.nocturnal-app.ru).
 
 # Русский язык
 [За основу был взят markmap](https://github.com/markmap/markmap).
@@ -37,7 +37,7 @@ MMR (markdown mindmap react) это простой Markdown редактор д�
 - Чтобы изменить цвет бэкграунда в SVG файле, см. const svgBackgroundColor = '#282832';
 Для остальной кастомизации страницы, см. src/components/mindMap/style.css
 
-# Деплой
+## Деплой
 - sudo apt install git-all
 - git clone https://github.com/KaigorodovTuskul/markdown_mindmap_react.git
 - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
