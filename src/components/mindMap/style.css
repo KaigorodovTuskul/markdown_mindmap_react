@@ -1,5 +1,211 @@
 @import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.0/dist/tailwind.min.css');
 
+@media (min-width: 360px) {
+  .page-wrapper {
+    background-color: var(--background-color);
+    height: 100vh;
+  }
+  .content-wrapper {
+    height: 100vh;
+    display: block;
+    padding: 1px 1px;
+  }
+
+  .app-container {
+    height: 100vh;
+  }
+  .container-wrapper {
+  }
+
+  .button-panel {
+    margin-top: 2vh;
+    margin-bottom: 1vh;
+    height: 5vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    padding: 5px;
+  }
+  .button-panel button {
+    padding: 0.4vh;
+    border: 1px solid var(--primary-color); /* Add a border */
+    border-radius: 4px; /* Optional: Add border-radius for rounded corners */
+    color: var(--primary-color);
+    margin-left: 1vh;
+    margin-right: 1vh;
+    cursor: pointer; /* Change cursor on hover */
+    font-size: 12px; /* Font size */
+    transition: background-color 0.3s, color 0.3s; /* Transition for hover effects */
+  }
+
+  .file-title {
+    height: 5vh;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color); /* Add a border */
+    border-radius: 1px; /* Optional: Add border-radius for rounded corners */
+    text-align: center;
+    font-size: large;
+    margin-bottom: 1vh;
+    display: flex;
+  }
+
+  .textarea-container {
+    font-size: small;
+    height: 36vh;
+    flex-direction: row;
+    padding: 5px;
+    margin-bottom: 5vh;
+  }
+
+  .svg-container {
+    height: 47vh;
+    flex-direction: row;
+    padding: 5px;
+  }
+
+  .toolbar {
+    display: flex;
+    justify-content: center;
+    height: 5vh;
+    flex-direction: row;
+    padding: 5px;
+  }
+  .mm-toolbar-item {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 667px) {
+  .app-container {
+    display: flex;
+
+  }
+  
+  .content-wrapper {
+    height: 100vh;
+    display: block;
+    padding: 1px 1px;
+  }
+
+  .container-wrapper {
+    display: grid;
+    grid-template-columns: 10% 30% 60%;
+    flex: 1;
+
+  }
+  
+  .file-title {
+    height: 20px;
+    color: var(--secondary-color);
+    font-size: 12px;
+    text-align: center;  
+  }
+
+  .textarea-container {
+    padding: 1px;
+    height: 88vh;
+  }
+  
+  .svg-container {
+    padding: 5px;
+    margin-right: 2px;
+    height: 95vh;
+  }
+
+  .toolbar {
+    display: flex;
+    justify-content: center;
+    height: 7vh;
+    flex-direction: row;
+    padding: 5px;
+  }
+  .mm-toolbar-item {
+    font-size: 11px;
+  }
+    
+  .button-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    margin-top: 30vh;
+    margin-right: 2px;
+  }
+
+  .button-panel button {
+    font-size: 10px;
+    padding: 5px 5px;
+    margin-bottom: 10px;
+    border: 1px solid var(--primary-color); /* Add a border */
+    border-radius: 4px; /* Optional: Add border-radius for rounded corners */
+  
+    background-color: var(--background-color);
+    color: var(--primary-color);
+    cursor: pointer; /* Change cursor on hover */
+    transition: background-color 0.3s, color 0.3s; /* Transition for hover effects */
+  }
+}
+
+@media (min-width: 1200px) {
+  .app-container {
+    display: flex;
+  }
+  
+  .container-wrapper {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: 7% 25% 70%;
+    flex: 1;
+    height: 90vh; /* Set the desired height here */
+  }
+  
+  .file-title {
+    font-size: xx-large;
+    height: 5vh;
+    color: var(--secondary-color);
+    padding: 1px;
+    text-align: center;
+  }
+
+  .textarea-container {
+    height: 91vh;
+    padding: 1px;
+  }
+  
+  .svg-container {
+    width: 96%;
+    height: 95vh;
+    padding: 1px;
+  }
+
+  .toolbar {
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 5px;
+  }
+
+  .button-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    margin-top: 30vh;
+  }
+
+  .button-panel button {
+    padding: 5px 5px;
+    margin-bottom: 10px;
+    border: 1px solid var(--primary-color); /* Add a border */
+    border-radius: 4px; /* Optional: Add border-radius for rounded corners */
+  
+    background-color: var(--background-color);
+    color: var(--primary-color);
+    cursor: pointer; /* Change cursor on hover */
+    font-size: 16px; /* Font size */
+    transition: background-color 0.3s, color 0.3s; /* Transition for hover effects */
+  }
+  
+}
+
 h1,
 p {
   font-family: Lato;
@@ -21,60 +227,8 @@ p {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
 }
 
-.app-container {
-  display: flex;
-}
 
-.container-wrapper {
-  display: grid;
-  grid-template-columns: 7% 25% 70%;
-  flex: 1;
-  height: 90vh; /* Set the desired height here */
-}
 
-.textarea-container {
-  padding: 1px;
-  border-right: 1px solid #ccc;
-}
 
-.svg-container {
-  padding: 1px;
-}
 
-.toolbar {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  padding: 10px;
-  border-left: 1px solid #ccc;
-}
-
-.file-title {
-  color: var(--secondary-color);
-  font-size: xx-large;
-  padding: 1px;
-  text-align: center;
-  border-bottom: 1px solid #ccc; /* Optional: Add a border for better separation */
-}
-
-.button-panel {
-  display: flex;
-  flex-direction: column;
-  padding: 5px;
-  margin-top: 60px;
-  margin-right: 20px;
-
-}
-.button-panel button {
-  padding: 5px 5px;
-  margin-bottom: 10px;
-  border: 1px solid var(--primary-color); /* Add a border */
-  border-radius: 4px; /* Optional: Add border-radius for rounded corners */
-
-  background-color: var(--background-color);
-  color: var(--primary-color);
-  cursor: pointer; /* Change cursor on hover */
-  font-size: 16px; /* Font size */
-  transition: background-color 0.3s, color 0.3s; /* Transition for hover effects */
-}
 
