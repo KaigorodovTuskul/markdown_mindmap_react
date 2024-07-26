@@ -1,17 +1,10 @@
 @import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.0/dist/tailwind.min.css');
 
-@media (min-width: 360px) {
-  .page-wrapper {
-    background-color: var(--background-color);
-    height: 100vh;
-  }
-  .content-wrapper {
-    height: 100vh;
-    display: block;
-    padding: 1px 1px;
-  }
 
+
+@media (min-width: 360px) {
   .app-container {
+    background-color: var(--background-color);
     height: 100vh;
   }
   .container-wrapper {
@@ -149,6 +142,7 @@
 @media (min-width: 1200px) {
   .app-container {
     display: flex;
+    background-color: var(--background-color);
   }
   
   .container-wrapper {
@@ -227,6 +221,69 @@ p {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
 }
 
+// google fonts
+// @import url("https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Inter:wght@200;300;400;500;600;700;800&display=swap");
+
+/*** Common variables ***/
+:root {
+  // colors
+  --theme-green-color: #5cd59b;
+  --primary-color: #ffffff;
+  --secondary-color: #32323e;
+  --background-color: #282832;
+  --side-link-hover-color: #525270;
+  --side-text-color: var(--dark-color);
+  --logo-color: var(--primary-color);
+  --xl-text-color: #ffff;
+  --lg-text-color: #f3f3f3;
+  --base-text-color: #98a9b5;
+  --text-color-inverted: #fff;
+  --text-color-inverted-blue: #fff;
+  --bg-color-inverted: #f7f8fa;
+  --border-color-inverted: #575777;
+  --toggle-btn-border-color: #525270;
+  --toggle-btn-bg-color: #525270;
+  --toggle-btn-icon-color: #bdbdbd;
+  --thead-bg-color: var(--secondary-color);
+  --tbl-border-color: var(--secondary-color);
+  --scroll-track-bg-color: #32323e;
+  --scroll-thumb-bg-color: #575777;
+  --progress-bar-bg-color: #424451;
+  --blue-color: #2F88F0;
+  --green-color: #5cd59b;
+  --orange-color: #F2C94C;
+  --red-color: #F27362;
+  --dark-color: #181c32;
+  --light-color: #ffffff;
+  // typography
+  --font-family-helvetica: -apple-system, BlinkMacSystemFont, "Segoe UI", Ubuntu, Roboto, "Helvetica Neue", sans-serif;
+  --font-family-arial: -apple-system, BlinkMacSystemFont, "Segoe UI", Ubuntu, Roboto, "Helvetica Neue", sans-serif;
+  --font-size: 16px;
+  --line-height: 1.6;
+  --font-weight: 400;
+  // transition
+  --default-transition: all 300ms ease-in-out;
+  // chart
+  --chart-primary-color: #2F88F0;
+  --chart-secondary-color: #E1EDFF;
+  // box shadow
+  --light-shadow1: rgba(0, 0, 0, 0.02) 0px 4px 12px;
+}
+
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+
+body {
+  font-family: var(--font-family-helvetica);
+  font-size: var(--font-size);
+  font-weight: var(--font-weight);
+}
 
 
 

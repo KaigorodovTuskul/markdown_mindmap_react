@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "d3-svg-to-png": "^0.3.1",
+    "html-to-image": "^1.11.11",
+    "html2canvas": "^1.4.1",
     "markmap-common": "^0.17.0",
     "markmap-lib": "^0.17.0",
     "markmap-toolbar": "^0.17.0",

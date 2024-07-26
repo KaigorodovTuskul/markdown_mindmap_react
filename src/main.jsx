@@ -1,7 +1,19 @@
-import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import MarkmapHooks from './components/mindMap/markmap-hooks';
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-      <App />
+function MindMapApp() {
+  return (
+    <MarkmapHooks />
+  );
+}
 
+export default MindMapApp;
+
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(
+  <React.StrictMode>
+    <MindMapApp />
+  </React.StrictMode>
 );

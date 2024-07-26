@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { createRoot } from 'react-dom/client';
 import MarkmapHooks from './markmap-hooks';
-import './style.css';
+import './style.scss';
 
 function MindMapApp() {
   return (
-
     <MarkmapHooks />
-
   );
 }
 

@@ -3,7 +3,9 @@ import { Markmap } from 'markmap-view';
 import { transformer } from './markmap';
 import { Toolbar } from 'markmap-toolbar';
 import 'markmap-toolbar/dist/style.css';
-import ButtonPanel from './ButtonPanel'; 
+import ButtonPanel from './ButtonPanel';
+import './style.scss';
+import d3ToPng from 'd3-svg-to-png';
 
 const initValue = '# Header';
 const LOCAL_STORAGE_KEY_VALUE = 'savedValue';
@@ -12,18 +14,19 @@ const LOCAL_STORAGE_KEY_NAME = 'savedFileName';
 export default function MarkmapHooks() {
   const [value, setValue] = useState(initValue);
   const [editableFileName, setEditableFileName] = useState('');
+  const caretPosition = useRef(0); 
 
-  const refSvg = useRef();
-  const refMm = useRef();
-  const refToolbar = useRef();
+  const refSvg = useRef<SVGSVGElement>(null);
+  const refMm = useRef<Markmap | null>(null);
+  const refToolbar = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (refMm.current) return;
 
-    const mm = Markmap.create(refSvg.current);
+    const mm = Markmap.create(refSvg.current!);
     refMm.current = mm;
 
-    renderToolbar(refMm.current, refToolbar.current);
+    renderToolbar(mm, refToolbar.current!);
   }, []);
 
   useEffect(() => {
@@ -35,7 +38,7 @@ export default function MarkmapHooks() {
     mm.fit(); 
   }, [value]);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
     setValue(newValue);
     localStorage.setItem(LOCAL_STORAGE_KEY_VALUE, newValue);
@@ -63,8 +66,8 @@ export default function MarkmapHooks() {
     mm.fit(); 
   };
 
-  const handleFileChange = async (e) => {
-    let file = e.target.files[0];
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    let file = e.target.files?.[0];
     if (!file) return;
 
     try {
@@ -76,14 +79,15 @@ export default function MarkmapHooks() {
       localStorage.setItem(LOCAL_STORAGE_KEY_NAME, fileNameWithoutExtension); 
       updateMarkmap(); 
     } catch (error) {
+      console.error('Failed to read file', error);
     }
   };
 
-  const readFileAsync = (file) => {
-    return new Promise((resolve, reject) => {
+  const readFileAsync = (file: File) => {
+    return new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = (event) => {
-        resolve(event.target.result);
+        resolve(event.target?.result as string);
       };
       reader.onerror = (error) => {
         reject(error);
@@ -94,47 +98,62 @@ export default function MarkmapHooks() {
 
   const handleSave = useCallback(() => {
     const safeFileName = (localStorage.getItem(LOCAL_STORAGE_KEY_NAME) && localStorage.getItem(LOCAL_STORAGE_KEY_NAME).trim()) || 'markmap';
-  
-    const blob = new Blob([localStorage.getItem(LOCAL_STORAGE_KEY_VALUE)], { type: 'text/plain' });
+
+    const blob = new Blob([localStorage.getItem(LOCAL_STORAGE_KEY_VALUE)!], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
-  
+
     const a = document.createElement('a');
     a.href = url;
     a.download = `${safeFileName}.txt`;
     a.click();
-  
+
     URL.revokeObjectURL(url);
-  }, [value, editableFileName]); 
+  }, [value, editableFileName]);
 
   const saveSvgAsImage = useCallback(async () => {
     const svg = refSvg.current;
     if (!svg) return;
   
-    const safeFileName = (localStorage.getItem(LOCAL_STORAGE_KEY_NAME) && localStorage.getItem(LOCAL_STORAGE_KEY_NAME).trim()) || 'markmap';
-  
-    let dataUrl;
     const svgData = new XMLSerializer().serializeToString(svg);
-    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-    dataUrl = URL.createObjectURL(svgBlob);
+    const blob = new Blob([svgData], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
   
-    const link = document.createElement('a');
-    link.href = dataUrl;
-    link.download = `${safeFileName}.svg`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    try {
+      // Убедитесь, что d3ToPng правильно настроен и возвращает данные
+      const base64Data = await d3ToPng(svg, 'markmap', {
+        scale: 3,
+        format: 'png',
+        quality: 0.9,
+        download: false,
+        ignore: '.ignored',
+        background: '#282832'
+      });
   
-    URL.revokeObjectURL(dataUrl);
-  }, [editableFileName]); 
+      // Проверяем, начинается ли строка с data:image/
+      if (base64Data.startsWith('data:image/')) {
+        const link = document.createElement('a');
+        link.href = base64Data;
+        link.download = 'markmap.png';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        console.error('Полученные данные не являются Base64 URL:', base64Data);
+      }
+    } catch (error) {
+      console.error('Ошибка при конвертации SVG в изображение:', error);
+    }
+  
+    URL.revokeObjectURL(url);
+  }, []);
+  
+  
 
-  useEffect(() => {
-  }, [editableFileName]);
-
-  const renderToolbar = (mm, wrapper) => {
+  const renderToolbar = (mm: Markmap, wrapper: HTMLDivElement) => {
     while (wrapper?.firstChild) wrapper.firstChild.remove();
     if (mm && wrapper) {
       const toolbar = new Toolbar();
-
+  
       toolbar.register({
         id: 'load',
         title: 'Load File',
@@ -147,29 +166,63 @@ export default function MarkmapHooks() {
           input.click();
         },
       });
-
+  
       toolbar.register({
         id: 'save',
         title: 'Save File',
         content: 'Save to TXT',
         onClick: handleSave,
       });
-
+  
       toolbar.register({
-        id: 'save-svg',
-        title: 'Save as SVG',
-        content: ' | Save to SVG |',
-        onClick: saveSvgAsImage, 
+        id: 'save-png',
+        title: 'Save as PNG',
+        content: ' | Save as PNG |',
+        onClick: saveSvgAsImage, // Теперь сохраняет как PNG
       });
-
+  
       toolbar.attach(mm);
       toolbar.setBrand(false);
-      toolbar.setItems([...Toolbar.defaultItems, 'load', 'save', 'save-svg']);
+      toolbar.setItems([...Toolbar.defaultItems, 'load', 'save', 'save-png']);
       wrapper.append(toolbar.render());
     }
   };
 
   const addHeading = () => {
+    const lines = value.split('\n');
+    const cursorPosition = caretPosition.current;
+
+    let currentLineIndex = 0;
+    let charCount = 0;
+    for (let i = 0; i < lines.length; i++) {
+      charCount += lines[i].length + 1;
+      if (charCount > cursorPosition) {
+        currentLineIndex = i;
+        break;
+      }
+    }
+
+    let lastHeadingLevel = 0;
+    for (let i = currentLineIndex; i >= 0; i--) {
+      const match = lines[i].match(/^(#+)\s/);
+      if (match) {
+        lastHeadingLevel = match[1].length;
+        break;
+      }
+    }
+
+    const newHeading = '#'.repeat(lastHeadingLevel || 1) + ' ';
+    const newValue = 
+      lines.slice(0, currentLineIndex + 1).join('\n') + '\n' + 
+      newHeading + 'Header' + '\n' + 
+      lines.slice(currentLineIndex + 1).join('\n');
+    setValue(newValue);
+    localStorage.setItem(LOCAL_STORAGE_KEY_VALUE, newValue); // Update local storage
+    caretPosition.current = cursorPosition + newHeading.length + 6;
+    updateMarkmap(); // Update markmap
+  };
+
+  const addSubHeading = () => {
     const lines = value.split('\n');
     let lastHeadingLevel = 0;
 
@@ -182,19 +235,40 @@ export default function MarkmapHooks() {
     }
 
     const newHeading = '#'.repeat(lastHeadingLevel + 1) + ' ';
-    setValue(value + '\n' + newHeading + 'Header');
+    const newValue = value + '\n' + newHeading + 'Subheader';
+    setValue(newValue);
+    localStorage.setItem(LOCAL_STORAGE_KEY_VALUE, newValue); // Update local storage
+    updateMarkmap(); // Update markmap
   };
 
   const addNode = () => {
-    setValue(value + '\n- ' + 'Node');
+    const startPos = caretPosition.current;
+    const endPos = caretPosition.current;
+    const newValue = value.substring(0, startPos) + ('\n' + '- Node') + value.substring(endPos);
+    setValue(newValue);
+    localStorage.setItem(LOCAL_STORAGE_KEY_VALUE, newValue); // Update local storage
+    caretPosition.current = startPos + ('\n' + '- Node').length;
+    updateMarkmap(); // Update markmap
   };
 
   const addCheckBoxTrue = () => {
-    setValue(value + '\n- [x] ' + 'Checkbox True');
+    const startPos = caretPosition.current;
+    const endPos = caretPosition.current;
+    const newValue = value.substring(0, startPos) + ('\n' + '- [x] Checkbox True') + value.substring(endPos);
+    setValue(newValue);
+    localStorage.setItem(LOCAL_STORAGE_KEY_VALUE, newValue); // Update local storage
+    caretPosition.current = startPos + ('\n' + '- [x] Checkbox True').length;
+    updateMarkmap(); // Update markmap
   };
 
   const addCheckBoxFalse = () => {
-    setValue(value + '\n- [ ] ' + 'Checkbox False');
+    const startPos = caretPosition.current;
+    const endPos = caretPosition.current;
+    const newValue = value.substring(0, startPos) + ('\n' + '- [ ] Checkbox False') + value.substring(endPos);
+    setValue(newValue);
+    localStorage.setItem(LOCAL_STORAGE_KEY_VALUE, newValue); // Update local storage
+    caretPosition.current = startPos + ('\n' + '- [ ] Checkbox False').length;
+    updateMarkmap(); // Update markmap
   };
 
   const svgFontColor = '#ffffff';
@@ -204,7 +278,7 @@ export default function MarkmapHooks() {
   return (
     <div className="app-container">
       <div className="container-wrapper">
-        <ButtonPanel onAddHeading={addHeading} onAddNode={addNode} onAddCheckBoxTrue={addCheckBoxTrue} onAddCheckBoxFalse={addCheckBoxFalse} /> {/* Add the ButtonPanel */}
+        <ButtonPanel onAddHeading={addHeading} onAddNode={addNode} onAddCheckBoxTrue={addCheckBoxTrue} onAddCheckBoxFalse={addCheckBoxFalse} onAddSubHeading={addSubHeading} />
         <div className="textarea-container">
           <div className="file-title">
             <input
@@ -216,7 +290,7 @@ export default function MarkmapHooks() {
                 localStorage.setItem(LOCAL_STORAGE_KEY_NAME, newFileName); 
               }}
               onBlur={() => {
-                setFileName(editableFileName);
+                setEditableFileName(editableFileName);
                 localStorage.setItem(LOCAL_STORAGE_KEY_NAME, editableFileName); 
               }}
               placeholder="Untitled"
@@ -227,7 +301,8 @@ export default function MarkmapHooks() {
             className="w-full h-full border border-gray-400"
             value={value}
             onChange={handleChange}
-            style={{ resize: 'none', backgroundColor: 'var(--background-color)', color: textareaFontColor}}
+            onClick={(e) => caretPosition.current = e.target.selectionStart}
+            style={{ resize: 'none', backgroundColor: 'var(--background-color)', color: textareaFontColor, caretColor: 'var(--orange-color)'}}
           />
         </div>
 
