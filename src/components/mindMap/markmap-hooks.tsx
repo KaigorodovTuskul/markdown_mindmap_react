@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Markmap } from 'markmap-view';
 import { transformer } from './markmap';
 import { Toolbar } from 'markmap-toolbar';
@@ -6,12 +6,64 @@ import 'markmap-toolbar/dist/style.css';
 import ButtonPanel from './ButtonPanel';
 import './style.scss';
 import d3ToPng from 'd3-svg-to-png';
-
+import axios from 'axios'; 
+import Modal from 'react-modal'; 
+import { ThreeDots } from 'react-loader-spinner'; 
 const initValue = '# Header';
 const LOCAL_STORAGE_KEY_VALUE = 'savedValue';
 const LOCAL_STORAGE_KEY_NAME = 'savedFileName';
 
 export default function MarkmapHooks() {
+  
+  Modal.setAppElement('#root'); 
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [recipientEmail, setRecipientEmail] = useState('');
+  const [loading, setLoading] = useState(false); 
+
+  const openModal = () => setModalIsOpen(true);
+  const closeModal = () => setModalIsOpen(false);
+
+  const handleSendEmail = async () => {
+    if (!recipientEmail) return;
+
+    const svg = refSvg.current;
+    if (!svg) return;
+
+    const safeFileName = (localStorage.getItem(LOCAL_STORAGE_KEY_NAME) && localStorage.getItem(LOCAL_STORAGE_KEY_NAME).trim()) || 'markmap';
+    setLoading(true); 
+
+    try {
+      const pngBase64 = await d3ToPng(svg, safeFileName, {
+        scale: 3,
+        format: 'png',
+        quality: 0.9,
+        download: false,
+        ignore: '.ignored',
+        background: '#282832'
+      });
+
+      const response = await axios.post('http://localhost:3001/send-email', {
+        email: recipientEmail,
+        subject: 'Markmap Export',
+        textContent: 'Please find the attached files.',
+        pngBase64,
+        txtContent: localStorage.getItem(LOCAL_STORAGE_KEY_VALUE)
+      });
+
+      if (response.status === 200) {
+        alert('Email sent successfully');
+        closeModal();
+      } else {
+        alert('Error sending email');
+      }
+    } catch (error) {
+      console.error('Error sending email', error);
+      alert('Error sending email');
+    } finally {
+      setLoading(false); // Скрыть спиннер
+    }
+  };
+
   const [value, setValue] = useState(initValue);
   const [editableFileName, setEditableFileName] = useState('');
   const caretPosition = useRef(0); 
@@ -119,7 +171,6 @@ export default function MarkmapHooks() {
     const url = URL.createObjectURL(blob);
   
     try {
-      // Убедитесь, что d3ToPng правильно настроен и возвращает данные
       const base64Data = await d3ToPng(svg, 'markmap', {
         scale: 3,
         format: 'png',
@@ -138,17 +189,15 @@ export default function MarkmapHooks() {
         link.click();
         document.body.removeChild(link);
       } else {
-        console.error('Полученные данные не являются Base64 URL:', base64Data);
+        console.error('Is not Base64 URL:', base64Data);
       }
     } catch (error) {
-      console.error('Ошибка при конвертации SVG в изображение:', error);
+      console.error('Error SVG convertation:', error);
     }
   
     URL.revokeObjectURL(url);
   }, []);
   
-  
-
   const renderToolbar = (mm: Markmap, wrapper: HTMLDivElement) => {
     while (wrapper?.firstChild) wrapper.firstChild.remove();
     if (mm && wrapper) {
@@ -178,16 +227,23 @@ export default function MarkmapHooks() {
         id: 'save-png',
         title: 'Save as PNG',
         content: ' | Save as PNG |',
-        onClick: saveSvgAsImage, // Теперь сохраняет как PNG
+        onClick: saveSvgAsImage,
+      });
+  
+      toolbar.register({
+        id: 'send-email',
+        title: 'Send via Email',
+        content: ' | Send via Email |',
+        onClick: openModal, 
       });
   
       toolbar.attach(mm);
       toolbar.setBrand(false);
-      toolbar.setItems([...Toolbar.defaultItems, 'load', 'save', 'save-png']);
+      toolbar.setItems([...Toolbar.defaultItems, 'load', 'save', 'save-png', 'send-email']);
       wrapper.append(toolbar.render());
     }
   };
-
+  
   const addHeading = () => {
     const lines = value.split('\n');
     const cursorPosition = caretPosition.current;
@@ -287,14 +343,14 @@ export default function MarkmapHooks() {
               onChange={(e) => {
                 const newFileName = e.target.value;
                 setEditableFileName(newFileName);
-                localStorage.setItem(LOCAL_STORAGE_KEY_NAME, newFileName); 
+                localStorage.setItem(LOCAL_STORAGE_KEY_NAME, newFileName);
               }}
               onBlur={() => {
                 setEditableFileName(editableFileName);
-                localStorage.setItem(LOCAL_STORAGE_KEY_NAME, editableFileName); 
+                localStorage.setItem(LOCAL_STORAGE_KEY_NAME, editableFileName);
               }}
               placeholder="Untitled"
-              style={{ width: '100%', textAlign: 'center', backgroundColor: 'var(--background-color)', color: 'var(--primary-color)'}}
+              style={{ width: '100%', textAlign: 'center', backgroundColor: 'var(--background-color)', color: 'var(--primary-color)' }}
             />
           </div>
           <textarea
@@ -302,20 +358,43 @@ export default function MarkmapHooks() {
             value={value}
             onChange={handleChange}
             onClick={(e) => caretPosition.current = e.target.selectionStart}
-            style={{ resize: 'none', backgroundColor: 'var(--background-color)', color: textareaFontColor, caretColor: 'var(--orange-color)'}}
+            style={{ resize: 'none', backgroundColor: 'var(--background-color)', color: textareaFontColor, caretColor: 'var(--orange-color)' }}
           />
         </div>
-
         <div className="svg-container">
           <svg
             className="w-full h-full border border-gray-400"
             ref={refSvg}
-            style={{ height: '100%', color: svgFontColor, backgroundColor: svgBackgroundColor}}
+            style={{ height: '100%', color: svgFontColor, backgroundColor: svgBackgroundColor }}
           />
-          <div className="toolbar" 
-          ref={refToolbar}></div>
+          <div className="toolbar" ref={refToolbar}></div>
         </div>
       </div>
+  
+      <Modal className="ReactModal__Content"
+        overlayClassName="ReactModal__Overlay" isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Send via Email">
+        <h2>Send via Email</h2>
+        <input
+          className="modal-input"
+          type="email"
+          placeholder="Recipient Email"
+          value={recipientEmail}
+          onChange={(e) => setRecipientEmail(e.target.value)}
+        />
+        <section className="modal-button-panel">
+        <button className="modal-button" onClick={handleSendEmail} disabled={loading}>Send
+        </button>
+        <button className="modal-button" onClick={closeModal} disabled={loading}>Close</button>
+
+        </section>
+        {loading && (
+          <div className="loading-container">
+            <ThreeDots color="#181c32" height={100} />
+            <p className="loading-text">Sending email. Please wait...</p>
+          </div>
+        )}
+
+      </Modal>
     </div>
-  );
+  );  
 }
