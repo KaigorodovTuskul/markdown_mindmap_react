@@ -7,7 +7,7 @@ import helmet from 'helmet';
 dotenv.config();
 
 const app = express();
-const port = 3001;
+const PORT = process.env.PORT || 3001;
 
 const corsOptions = {
     origin: process.env.DOMAIN_NAME, 
@@ -57,7 +57,12 @@ app.post('/send-email', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3001;
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+  });
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
