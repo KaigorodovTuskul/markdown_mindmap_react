@@ -2,20 +2,21 @@ import express from 'express';
 import nodemailer from 'nodemailer';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import helmet from 'helmet';
 
-// Подключаем dotenv в начале файла
 dotenv.config();
 
 const app = express();
 const port = 3001;
 
 const corsOptions = {
-    origin: process.env.DOMAIN_NAME, // Замените на ваш фронтенд URL
+    origin: process.env.DOMAIN_NAME, 
     optionsSuccessStatus: 200,
   };
   app.use(cors(corsOptions));
 
-app.use(express.json({ limit: '10mb' })); // Увеличение лимита для JSON тела запроса
+app.use(express.json({ limit: '10mb' })); 
+app.use(helmet());
 
 const transporter = nodemailer.createTransport({
   host: 'smtp.yandex.ru',
