@@ -6,64 +6,12 @@ import 'markmap-toolbar/dist/style.css';
 import ButtonPanel from './ButtonPanel';
 import './style.scss';
 import d3ToPng from 'd3-svg-to-png';
-import axios from 'axios'; 
-import Modal from 'react-modal'; 
-import { ThreeDots } from 'react-loader-spinner'; 
+
 const initValue = '# Header';
 const LOCAL_STORAGE_KEY_VALUE = 'savedValue';
 const LOCAL_STORAGE_KEY_NAME = 'savedFileName';
 
 export default function MarkmapHooks() {
-  
-  Modal.setAppElement('#root'); 
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [recipientEmail, setRecipientEmail] = useState('');
-  const [loading, setLoading] = useState(false); 
-
-  const openModal = () => setModalIsOpen(true);
-  const closeModal = () => setModalIsOpen(false);
-
-  const handleSendEmail = async () => {
-    if (!recipientEmail) return;
-
-    const svg = refSvg.current;
-    if (!svg) return;
-
-    const safeFileName = (localStorage.getItem(LOCAL_STORAGE_KEY_NAME) && localStorage.getItem(LOCAL_STORAGE_KEY_NAME).trim()) || 'markmap';
-    setLoading(true); 
-
-    try {
-      const pngBase64 = await d3ToPng(svg, safeFileName, {
-        scale: 3,
-        format: 'png',
-        quality: 0.9,
-        download: false,
-        ignore: '.ignored',
-        background: '#282832'
-      });
-
-      const response = await axios.post('http://localhost:3001/send-email', {
-        email: recipientEmail,
-        subject: 'Markmap Export',
-        textContent: 'Please find the attached files.',
-        pngBase64,
-        txtContent: localStorage.getItem(LOCAL_STORAGE_KEY_VALUE)
-      });
-
-      if (response.status === 200) {
-        alert('Email sent successfully');
-        closeModal();
-      } else {
-        alert('Error sending email');
-      }
-    } catch (error) {
-      console.error('Error sending email', error);
-      alert('Error sending email');
-    } finally {
-      setLoading(false); // Скрыть спиннер
-    }
-  };
-
   const [value, setValue] = useState(initValue);
   const [editableFileName, setEditableFileName] = useState('');
   const caretPosition = useRef(0); 
@@ -229,17 +177,10 @@ export default function MarkmapHooks() {
         content: ' | Save as PNG |',
         onClick: saveSvgAsImage,
       });
-  
-      toolbar.register({
-        id: 'send-email',
-        title: 'Send via Email',
-        content: ' | Send via Email |',
-        onClick: openModal, 
-      });
-  
+
       toolbar.attach(mm);
       toolbar.setBrand(false);
-      toolbar.setItems([...Toolbar.defaultItems, 'load', 'save', 'save-png', 'send-email']);
+      toolbar.setItems([...Toolbar.defaultItems, 'load', 'save', 'save-png']);
       wrapper.append(toolbar.render());
     }
   };
@@ -370,31 +311,6 @@ export default function MarkmapHooks() {
           <div className="toolbar" ref={refToolbar}></div>
         </div>
       </div>
-  
-      <Modal className="ReactModal__Content"
-        overlayClassName="ReactModal__Overlay" isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Send via Email">
-        <h2>Send via Email</h2>
-        <input
-          className="modal-input"
-          type="email"
-          placeholder="Recipient Email"
-          value={recipientEmail}
-          onChange={(e) => setRecipientEmail(e.target.value)}
-        />
-        <section className="modal-button-panel">
-        <button className="modal-button" onClick={handleSendEmail} disabled={loading}>Send
-        </button>
-        <button className="modal-button" onClick={closeModal} disabled={loading}>Close</button>
-
-        </section>
-        {loading && (
-          <div className="loading-container">
-            <ThreeDots color="#181c32" height={100} />
-            <p className="loading-text">Sending email. Please wait...</p>
-          </div>
-        )}
-
-      </Modal>
     </div>
   );  
 }
